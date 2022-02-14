@@ -64,8 +64,8 @@ class ProductController extends Controller
         $data['product']['options'] = $product_options;
 
         $orders = OrderItem::where("product_id", $id)->pluck("id")->toArray();
-        $data['rate_count'] = Rate::whereIn("order_id", $orders)->count("id");
-        $data['rates'] = Rate::whereIn("order_id", $orders)->with('user')->orderBy("rate", "desc")->take(3)->get();
+        $data['product']['rate_count'] = Rate::whereIn("order_id", $orders)->count("id");
+        $data['product']['rates'] = Rate::whereIn("order_id", $orders)->with('user')->orderBy("rate", "desc")->take(3)->get();
         
         if($request->lang == 'en'){
             $data['related'] = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id' )->where('deleted' , 0)->where('category_id' , $data['product']['category_id'])->where('id' , '!=' , $data['product']['id'])->get();
