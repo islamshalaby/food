@@ -68,9 +68,9 @@ class ProductController extends Controller
         $data['product']['rates'] = Rate::whereIn("order_id", $orders)->with('user')->orderBy("rate", "desc")->take(3)->get();
         
         if($request->lang == 'en'){
-            $data['related'] = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id' )->where('deleted' , 0)->where('category_id' , $data['product']['category_id'])->where('id' , '!=' , $data['product']['id'])->get();
+            $data['related'] = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('category_id' , $data['product']['category_id'])->where('id' , '!=' , $data['product']['id'])->get();
         }else{
-            $data['related'] = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id')->where('deleted' , 0)->where('category_id' , $data['product']['category_id'])->where('id' , '!=' , $data['product']['id'])->get();
+            $data['related'] = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate')->where('deleted' , 0)->where('category_id' , $data['product']['category_id'])->where('id' , '!=' , $data['product']['id'])->get();
         }
         
         for($j = 0; $j < count($data['related']) ; $j++){
