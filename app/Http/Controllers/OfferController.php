@@ -34,8 +34,6 @@ class OfferController extends Controller
                     array_push($offers , $offers_before[$i]);
                 }
             }
-
-
         }
 
         $new_offers = [];

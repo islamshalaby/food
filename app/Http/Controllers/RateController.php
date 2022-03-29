@@ -97,7 +97,7 @@ class RateController extends Controller
         }
 
         $rate->order->product->rate = round($average, 1);
-        
+        // dd($rate->order->product->rate);
         $rate->order->product->save();
 
         $response = APIHelpers::createApiResponse(false , 200 , '' , '' , $rate , $request->lang);
