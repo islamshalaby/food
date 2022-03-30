@@ -124,6 +124,7 @@ class UserController extends Controller
             'phone' => 'required'
         ]);
 
+        // dd($request->all());
         if($validator->fails()) {
             $response = APIHelpers::createApiResponse(true , 406 , 'Missing Required Fields' , 'حقل الهاتف اجباري' , null , $request->lang);
             return response()->json($response , 406);
@@ -147,7 +148,7 @@ class UserController extends Controller
 		}
 			
 		}
-			
+			$response = APIHelpers::createApiResponse(false , 200 , '' , '' , $user , $request->lang);
             return response()->json($response , 200);
         }
 		if($request->email){
