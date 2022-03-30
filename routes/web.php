@@ -219,6 +219,7 @@ Route::group([
         "prefix" => "products"
     ], function($router){
          Route::get('show' , 'ProductController@show')->name('products.index');
+         Route::post('sort' , 'ProductController@updateProductsSorting')->name('products.sort');
          Route::get('fetchbrands/{category}' , 'ProductController@fetch_category_brands');
          Route::get('fetchsubcategories/{brand}' , 'ProductController@fetch_brand_sub_categories');
          Route::get('fetchproducts/{subCategory}' , 'ProductController@sub_category_products');

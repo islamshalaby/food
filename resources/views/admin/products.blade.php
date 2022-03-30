@@ -17,290 +17,309 @@
 
 @push('scripts')
 <script src="/admin/plugins/table/datatable/custom_miscellaneous.js"></script>
-    <script>
-        var language = "{{ Config::get('app.locale') }}",
-            select = "{{ __('messages.select') }}",
-            details = "{{ __('messages.details') }}",
-            edit = "{{ __('messages.edit') }}",
-            delte = "{{ __('messages.delete') }}"
-        $("#category").on("change", function () {
-            console.log("test2")
-            var categoryId = $(this).val()
-            
-
-            dTbls.clear().draw();
-            
-            $.ajax({
-                url : "fetchcategoryproducts/" + categoryId,
-                type : 'GET',
-                success : function (data) {
-                    var i = 1
-                    data.forEach(function(element) {
-                        console.log("in")
-                        var elementName = element.title_en,
-                            cat = element.category.title_en
-                        if (language == 'ar') {
-                            elementName = element.title_ar
-                            cat = element.category.title_ar
-                           
-                        }
-                        
-                        var permition = [],
-                            detailsLink = "/admin-panel/products/details/" + element.id,
-                            editLink = "/admin-panel/products/edit/" + element.id,
-                            deleteLink = "/admin-panel/products/delete/" + element.id,
-                            dinar = "{{ __('messages.dinar') }}",
-                            visibilityStatus = "{{ __('messages.visible') }}",
-                            hideShoProduct = "{{ __('messages.hide_product') }}",
-                            hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 1
-
-                            if (element.hidden == 1) {
-                                hideShoProduct = "{{ __('messages.show_product') }}"
-                                hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 0
-                                visibilityStatus = "{{ __('messages.hidden') }}"
-                            }
-                        @if(Auth::user()->update_data) 
-                        permition[0] = `<a class="dropdown-item" href="${editLink}">${edit}</a>`
-                        @endif
-                        @if(Auth::user()->delete_data) 
-                        permition[1] = `<a class="dropdown-item"  onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${deleteLink}">${delte}</a>`
-                        permition[2] = `<a class="dropdown-item" onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${hideShowLink}">${hideShoProduct}</a>`
-                        @endif
-                        $("#html5-extension tbody").parent('.form-group').show()
-                        console.log("before")
-                        var rowNode = dTbls.row.add( [
-                            `${i}`,
-                            `<img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/${ (element.images[0].image) ? element.images[0].image : '' }"  />`,
-                            `${elementName}`,
-                            `${cat}`,
-                            `${element.total_quatity}`,
-                            `${element.remaining_quantity}`,
-                            `${element.sold_count}`,
-                            `${element.price_before_offer} ${dinar}`,
-                            `${element.final_price} ${dinar}`,
-                            `${element.updated_at}`,
-                            `${element.barcode}`,
-                            `<td class="hide_col">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-dark btn-sm">${visibilityStatus}</button>
-                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference5" style="will-change: transform;">
-                                      <a class="dropdown-item" href="${detailsLink}">${details}</a>
-                                      ${(permition[0]) ? permition[0] : ''}
-                                      ${(permition[1]) ? permition[1] : ''} 
-                                      <div class="dropdown-divider"></div>
-                                      ${(permition[2]) ? permition[2] : ''}
-                                    </div>
-                                  </div>
-                            </td>`
-                        ] ).draw().node();
-
-                        $( rowNode ).find('td').eq(1).addClass('hide_col');
-                       
-                        $( rowNode ).find('td').eq(10).addClass('hide_col');
-                        i ++
-                    })
-                    
-                }
-            })
-            
-            $("#sub_category_select").html("")
-            $.ajax({
-                url : "fetchsubcategorybycategory/" + categoryId,
-                type : 'GET',
-                success : function (data) {
-                    $("#sub_category_select").prepend(`
-                            <option selected disabled>${select}</option>
-                        `)
-                        
-                    data.forEach(function(element) {
-                        var elementName = element.title_en
-                        if (language == 'ar') {
-                            elementName = element.title_ar
-                        }
-                        
-                        $("#sub_category_select").parent('.form-group').show()
-                        $("#sub_category_select").append(`
-                            <option value="${element.id}">${elementName}</option>
-                        `)
-                    })
-                }
-            })
-
-        })
-
-        $("#brand").on("change", function () {
-            
-            var brandId = $(this).val()
-            
-
-            dTbls.clear().draw();
-            
-            $.ajax({
-                url : "fetchbrandproducts/" + brandId,
-                type : 'GET',
-                success : function (data) {
-                    var i = 1
-                    data.forEach(function(element) {
-                        
-                        var elementName = element.title_en,
-                            cat = element.category.title_en
-                        if (language == 'ar') {
-                            elementName = element.title_ar
-                            cat = element.category.title_ar
-                           
-                        }
-                        
-                        var permition = [],
-                            detailsLink = "/admin-panel/products/details/" + element.id,
-                            editLink = "/admin-panel/products/edit/" + element.id,
-                            deleteLink = "/admin-panel/products/delete/" + element.id,
-                            dinar = "{{ __('messages.dinar') }}",
-                            visibilityStatus = "{{ __('messages.visible') }}",
-                            hideShoProduct = "{{ __('messages.hide_product') }}",
-                            hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 1
-
-                            if (element.hidden == 1) {
-                                hideShoProduct = "{{ __('messages.show_product') }}"
-                                hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 0
-                                visibilityStatus = "{{ __('messages.hidden') }}"
-                            }
-                        @if(Auth::user()->update_data) 
-                        permition[0] = `<a class="dropdown-item" href="${editLink}">${edit}</a>`
-                        @endif
-                        @if(Auth::user()->delete_data) 
-                        permition[1] = `<a class="dropdown-item"  onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${deleteLink}">${delte}</a>`
-                        permition[2] = `<a class="dropdown-item" onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${hideShowLink}">${hideShoProduct}</a>`
-                        @endif
-                        $("#html5-extension tbody").parent('.form-group').show()
-                        
-                        var rowNode = dTbls.row.add( [
-                            `${i}`,
-                            `<img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/${ (element.images[0].image) ? element.images[0].image : '' }"  />`,
-                            `${elementName}`,
-                            `${cat}`,
-                            `${element.total_quatity}`,
-                            `${element.remaining_quantity}`,
-                            `${element.sold_count}`,
-                            `${element.price_before_offer} ${dinar}`,
-                            `${element.final_price} ${dinar}`,
-                            `${element.updated_at}`,
-                            `${element.barcode}`,
-                            `<td class="hide_col">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-dark btn-sm">${visibilityStatus}</button>
-                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference5" style="will-change: transform;">
-                                      <a class="dropdown-item" href="${detailsLink}">${details}</a>
-                                      ${(permition[0]) ? permition[0] : ''}
-                                      ${(permition[1]) ? permition[1] : ''} 
-                                      <div class="dropdown-divider"></div>
-                                      ${(permition[2]) ? permition[2] : ''} 
-                                    </div>
-                                  </div>
-                            </td>`
-                        ] ).draw().node();
-
-                        $( rowNode ).find('td').eq(1).addClass('hide_col');
-                        
-                        $( rowNode ).find('td').eq(10).addClass('hide_col');
-                        i ++
-                    })
-                    
-                }
-            })
-
-        })
-
+<script>
+    var language = "{{ Config::get('app.locale') }}",
+        select = "{{ __('messages.select') }}",
+        details = "{{ __('messages.details') }}",
+        edit = "{{ __('messages.edit') }}",
+        delte = "{{ __('messages.delete') }}"
+    $("#category").on("change", function () {
+        console.log("test2")
+        var categoryId = $(this).val()
         
 
-        $("#sub_category_select").on("change", function () {
-            dTbls.clear().draw();
-            var subCategoryId = $(this).val()
-            $.ajax({
-                url : "fetchproducts/" + subCategoryId,
-                type : 'GET',
-                success : function (data) {
-                    var i = 1
-                    data.forEach(function(element) {
-                        var elementName = element.title_en,
-                            cat = element.category.title_en
-                        if (language == 'ar') {
-                            elementName = element.title_ar
-                            cat = element.category.title_ar
-                           
+        dTbls.clear().draw();
+        
+        $.ajax({
+            url : "fetchcategoryproducts/" + categoryId,
+            type : 'GET',
+            success : function (data) {
+                var i = 1
+                data.forEach(function(element) {
+                    console.log("in")
+                    var elementName = element.title_en,
+                        cat = element.category.title_en
+                    if (language == 'ar') {
+                        elementName = element.title_ar
+                        cat = element.category.title_ar
+                        
+                    }
+                    
+                    var permition = [],
+                        detailsLink = "/admin-panel/products/details/" + element.id,
+                        editLink = "/admin-panel/products/edit/" + element.id,
+                        deleteLink = "/admin-panel/products/delete/" + element.id,
+                        dinar = "{{ __('messages.dinar') }}",
+                        visibilityStatus = "{{ __('messages.visible') }}",
+                        hideShoProduct = "{{ __('messages.hide_product') }}",
+                        hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 1
+
+                        if (element.hidden == 1) {
+                            hideShoProduct = "{{ __('messages.show_product') }}"
+                            hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 0
+                            visibilityStatus = "{{ __('messages.hidden') }}"
                         }
-                        
-                        var permition = [],
-                            detailsLink = "/admin-panel/products/details/" + element.id,
-                            editLink = "/admin-panel/products/edit/" + element.id,
-                            deleteLink = "/admin-panel/products/delete/" + element.id,
-                            dinar = "{{ __('messages.dinar') }}",
-                            visibilityStatus = "{{ __('messages.visible') }}",
-                            hideShoProduct = "{{ __('messages.hide_product') }}",
-                            hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 1
+                    @if(Auth::user()->update_data) 
+                    permition[0] = `<a class="dropdown-item" href="${editLink}">${edit}</a>`
+                    @endif
+                    @if(Auth::user()->delete_data) 
+                    permition[1] = `<a class="dropdown-item"  onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${deleteLink}">${delte}</a>`
+                    permition[2] = `<a class="dropdown-item" onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${hideShowLink}">${hideShoProduct}</a>`
+                    @endif
+                    $("#html5-extension tbody").parent('.form-group').show()
+                    console.log("before")
+                    var rowNode = dTbls.row.add( [
+                        `${i}`,
+                        `<img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/${ (element.images[0].image) ? element.images[0].image : '' }"  />`,
+                        `${elementName}`,
+                        `${cat}`,
+                        `${element.total_quatity}`,
+                        `${element.remaining_quantity}`,
+                        `${element.sold_count}`,
+                        `${element.price_before_offer} ${dinar}`,
+                        `${element.final_price} ${dinar}`,
+                        `${element.updated_at}`,
+                        `${element.barcode}`,
+                        `<td class="hide_col">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark btn-sm">${visibilityStatus}</button>
+                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference5" style="will-change: transform;">
+                                    <a class="dropdown-item" href="${detailsLink}">${details}</a>
+                                    ${(permition[0]) ? permition[0] : ''}
+                                    ${(permition[1]) ? permition[1] : ''} 
+                                    <div class="dropdown-divider"></div>
+                                    ${(permition[2]) ? permition[2] : ''}
+                                </div>
+                                </div>
+                        </td>`
+                    ] ).draw().node();
 
-                            if (element.hidden == 1) {
-                                hideShoProduct = "{{ __('messages.show_product') }}"
-                                hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 0
-                                visibilityStatus = "{{ __('messages.hidden') }}"
-                            }
-                        @if(Auth::user()->update_data) 
-                        permition[0] = `<a class="dropdown-item" href="${editLink}">${edit}</a>`
-                        @endif
-                        @if(Auth::user()->delete_data) 
-                        permition[1] = `<a class="dropdown-item"  onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${deleteLink}">${delte}</a>`
-                        permition[2] = `<a class="dropdown-item" onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${hideShowLink}">${hideShoProduct}</a>`
-                        @endif
-                        $("#html5-extension tbody").parent('.form-group').show()
-                        
-                        
-                        var rowNode = dTbls.row.add( [
-                            `${i}`,
-                            `<img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/${ (element.images[0].image) ? element.images[0].image : '' }"  />`,
-                            `${elementName}`,
-                            `${cat}`,
-                            `${element.total_quatity}`,
-                            `${element.remaining_quantity}`,
-                            `${element.sold_count}`,
-                            `${element.price_before_offer} ${dinar}`,
-                            `${element.final_price} ${dinar}`,
-                            `${element.updated_at}`,
-                            `${element.barcode}`,
-                            `<td class="hide_col">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-dark btn-sm">${visibilityStatus}</button>
-                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference5" style="will-change: transform;">
-                                      <a class="dropdown-item" href="${detailsLink}">${details}</a>
-                                      ${(permition[0]) ? permition[0] : ''}
-                                      ${(permition[1]) ? permition[1] : ''} 
-                                      <div class="dropdown-divider"></div>
-                                      ${(permition[2]) ? permition[2] : ''} 
-                                    </div>
-                                  </div>
-                            </td>`
-                            
-                        ] ).draw().node();
-
-                        $( rowNode ).find('td').eq(1).addClass('hide_col');
-                        
-                        $( rowNode ).find('td').eq(10).addClass('hide_col');
-                        
-                        i ++
-                    })
+                    $( rowNode ).find('td').eq(1).addClass('hide_col');
                     
-                    
-                }
-            })
+                    $( rowNode ).find('td').eq(10).addClass('hide_col');
+                    i ++
+                })
+                
+            }
         })
-    </script>
+        
+        $("#sub_category_select").html("")
+        $.ajax({
+            url : "fetchsubcategorybycategory/" + categoryId,
+            type : 'GET',
+            success : function (data) {
+                $("#sub_category_select").prepend(`
+                        <option selected disabled>${select}</option>
+                    `)
+                    
+                data.forEach(function(element) {
+                    var elementName = element.title_en
+                    if (language == 'ar') {
+                        elementName = element.title_ar
+                    }
+                    
+                    $("#sub_category_select").parent('.form-group').show()
+                    $("#sub_category_select").append(`
+                        <option value="${element.id}">${elementName}</option>
+                    `)
+                })
+            }
+        })
+
+    })
+
+    $("#brand").on("change", function () {
+        
+        var brandId = $(this).val()
+        
+
+        dTbls.clear().draw();
+        
+        $.ajax({
+            url : "fetchbrandproducts/" + brandId,
+            type : 'GET',
+            success : function (data) {
+                var i = 1
+                data.forEach(function(element) {
+                    
+                    var elementName = element.title_en,
+                        cat = element.category.title_en
+                    if (language == 'ar') {
+                        elementName = element.title_ar
+                        cat = element.category.title_ar
+                        
+                    }
+                    
+                    var permition = [],
+                        detailsLink = "/admin-panel/products/details/" + element.id,
+                        editLink = "/admin-panel/products/edit/" + element.id,
+                        deleteLink = "/admin-panel/products/delete/" + element.id,
+                        dinar = "{{ __('messages.dinar') }}",
+                        visibilityStatus = "{{ __('messages.visible') }}",
+                        hideShoProduct = "{{ __('messages.hide_product') }}",
+                        hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 1
+
+                        if (element.hidden == 1) {
+                            hideShoProduct = "{{ __('messages.show_product') }}"
+                            hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 0
+                            visibilityStatus = "{{ __('messages.hidden') }}"
+                        }
+                    @if(Auth::user()->update_data) 
+                    permition[0] = `<a class="dropdown-item" href="${editLink}">${edit}</a>`
+                    @endif
+                    @if(Auth::user()->delete_data) 
+                    permition[1] = `<a class="dropdown-item"  onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${deleteLink}">${delte}</a>`
+                    permition[2] = `<a class="dropdown-item" onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${hideShowLink}">${hideShoProduct}</a>`
+                    @endif
+                    $("#html5-extension tbody").parent('.form-group').show()
+                    
+                    var rowNode = dTbls.row.add( [
+                        `${i}`,
+                        `<img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/${ (element.images[0].image) ? element.images[0].image : '' }"  />`,
+                        `${elementName}`,
+                        `${cat}`,
+                        `${element.total_quatity}`,
+                        `${element.remaining_quantity}`,
+                        `${element.sold_count}`,
+                        `${element.price_before_offer} ${dinar}`,
+                        `${element.final_price} ${dinar}`,
+                        `${element.updated_at}`,
+                        `${element.barcode}`,
+                        `<td class="hide_col">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark btn-sm">${visibilityStatus}</button>
+                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference5" style="will-change: transform;">
+                                    <a class="dropdown-item" href="${detailsLink}">${details}</a>
+                                    ${(permition[0]) ? permition[0] : ''}
+                                    ${(permition[1]) ? permition[1] : ''} 
+                                    <div class="dropdown-divider"></div>
+                                    ${(permition[2]) ? permition[2] : ''} 
+                                </div>
+                                </div>
+                        </td>`
+                    ] ).draw().node();
+
+                    $( rowNode ).find('td').eq(1).addClass('hide_col');
+                    
+                    $( rowNode ).find('td').eq(10).addClass('hide_col');
+                    i ++
+                })
+                
+            }
+        })
+
+    })
+
+    
+
+    $("#sub_category_select").on("change", function () {
+        dTbls.clear().draw();
+        var subCategoryId = $(this).val()
+        $.ajax({
+            url : "fetchproducts/" + subCategoryId,
+            type : 'GET',
+            success : function (data) {
+                var i = 1
+                data.forEach(function(element) {
+                    var elementName = element.title_en,
+                        cat = element.category.title_en
+                    if (language == 'ar') {
+                        elementName = element.title_ar
+                        cat = element.category.title_ar
+                        
+                    }
+                    
+                    var permition = [],
+                        detailsLink = "/admin-panel/products/details/" + element.id,
+                        editLink = "/admin-panel/products/edit/" + element.id,
+                        deleteLink = "/admin-panel/products/delete/" + element.id,
+                        dinar = "{{ __('messages.dinar') }}",
+                        visibilityStatus = "{{ __('messages.visible') }}",
+                        hideShoProduct = "{{ __('messages.hide_product') }}",
+                        hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 1
+
+                        if (element.hidden == 1) {
+                            hideShoProduct = "{{ __('messages.show_product') }}"
+                            hideShowLink = "/admin-panel/products/hide/" + element.id + "/" + 0
+                            visibilityStatus = "{{ __('messages.hidden') }}"
+                        }
+                    @if(Auth::user()->update_data) 
+                    permition[0] = `<a class="dropdown-item" href="${editLink}">${edit}</a>`
+                    @endif
+                    @if(Auth::user()->delete_data) 
+                    permition[1] = `<a class="dropdown-item"  onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${deleteLink}">${delte}</a>`
+                    permition[2] = `<a class="dropdown-item" onclick='return confirm("{{ __('messages.are_you_sure') }}");' href="${hideShowLink}">${hideShoProduct}</a>`
+                    @endif
+                    $("#html5-extension tbody").parent('.form-group').show()
+                    
+                    
+                    var rowNode = dTbls.row.add( [
+                        `${i}`,
+                        `<img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/${ (element.images[0].image) ? element.images[0].image : '' }"  />`,
+                        `${elementName}`,
+                        `${cat}`,
+                        `${element.total_quatity}`,
+                        `${element.remaining_quantity}`,
+                        `${element.sold_count}`,
+                        `${element.price_before_offer} ${dinar}`,
+                        `${element.final_price} ${dinar}`,
+                        `${element.updated_at}`,
+                        `${element.barcode}`,
+                        `<td class="hide_col">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark btn-sm">${visibilityStatus}</button>
+                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference5" style="will-change: transform;">
+                                    <a class="dropdown-item" href="${detailsLink}">${details}</a>
+                                    ${(permition[0]) ? permition[0] : ''}
+                                    ${(permition[1]) ? permition[1] : ''} 
+                                    <div class="dropdown-divider"></div>
+                                    ${(permition[2]) ? permition[2] : ''} 
+                                </div>
+                                </div>
+                        </td>`
+                        
+                    ] ).draw().node();
+
+                    $( rowNode ).find('td').eq(1).addClass('hide_col');
+                    
+                    $( rowNode ).find('td').eq(10).addClass('hide_col');
+                    
+                    i ++
+                })
+                
+                
+            }
+        })
+    })
+</script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js" type="text/javascript"></script>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $("tbody#sortable").sortable({
+        items : "tr",
+        placeholder : "ui-state-hightlight",
+        update : function () {
+            var ids = $('tbody#sortable').sortable("serialize");
+            var url = "{{ route('products.sort') }}";
+            
+            $.post(url , ids + "&_token={{ csrf_token() }}");
+    
+        }
+    });
+</script>
 @endpush
 
 @section('content')
@@ -375,10 +394,10 @@
                             <th class="text-center hide_col">{{ __('messages.actions') }}</th> 
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="sortable">
                         <?php $i = 1; ?>
                         @foreach ($data['products'] as $product)
-                            <tr>
+                            <tr id="id_{{ $product['id'] }}">
                                 <td><?=$i;?></td>
                                 <td class="hide_col"><img src="https://res.cloudinary.com/dz3o88rdi/image/upload/w_50,q_50/v1581928924/{{ isset($product->images[0]->image) ? $product->images[0]->image : '' }}"  /></td>
                                 <td>{{ App::isLocale('en') ? $product->title_en : $product->title_ar }}</td>

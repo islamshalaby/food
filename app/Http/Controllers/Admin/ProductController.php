@@ -21,16 +21,47 @@ class ProductController extends AdminController{
         $data['categories'] = Category::where('deleted', 0)->orderBy('id', 'desc')->get();
         $data['brands'] = Brand::where('deleted', 0)->orderBy('id', 'desc')->get();
         if($request->expire){
-            $data['products'] = Product::where('deleted', 0)->where('remaining_quantity' , '<' , 10)->orderBy('id' , 'desc')->get();
+            $data['products'] = Product::where('deleted', 0)->where('remaining_quantity' , '<' , 10)->orderBy('sort' , 'asc')->get();
             $data['expire'] = 'soon';
         }else{
-            $data['products'] = Product::where('deleted', 0)->orderBy('id' , 'desc')->get();
+            $data['products'] = Product::where('deleted', 0)->orderBy('sort' , 'asc')->get();
             $data['expire'] = 'no';
         }
         
         
         $data['encoded_products'] = json_encode($data['products']);
         return view('admin.products', ['data' => $data]);
+    }
+
+    // update sections sorting
+    public function updateProductsSorting(Request $request) {
+        $post = $request->all();
+
+        $count = 0;
+
+        for ($i = 0; $i < count($post['id']); $i ++) :
+            $index = $post['id'][$i];
+
+            $home_section = Product::findOrFail($index);
+
+            $count ++;
+
+            $newPosition = $count;
+
+            $data['sort'] = $newPosition;
+
+
+            if($home_section->update($data)) {
+                echo "successss";
+            }else {
+                echo "failed";
+            }
+
+
+        endfor;
+
+        exit('success');
+
     }
 
     // fetch category brands

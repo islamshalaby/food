@@ -120,6 +120,8 @@ Route::get('/getwhatsappnumber/{lang}/{v}' , 'SettingController@getwhatsapp')->m
 // get products 
 Route::get('/products/{lang}/{v}' , 'ProductController@getproducts')->middleware('checkguest');
 
+
+
 // get products 
 Route::get('/products/rates/{product_id}/{lang}/{v}' , 'ProductController@getProductRates')->middleware('checkguest');
 

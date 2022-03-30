@@ -25,7 +25,8 @@ class Product extends Model
         'total_quatity',
         'remaining_quantity',
         'rate', 
-        'hidden'
+        'hidden',
+        'sort'
     ];
 
     public function images() {

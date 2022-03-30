@@ -162,15 +162,15 @@ class ProductController extends Controller
 
         if($request->sub_category_id == 0){
             if($request->lang == 'en'){
-                $products = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->simplePaginate(100);
+                $products = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->orderBy('sort', 'asc')->simplePaginate(100);
             }else{
-                $products = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->simplePaginate(100);
+                $products = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->orderBy('sort', 'asc')->simplePaginate(100);
             }
         }else{
             if($request->lang == 'en'){
-                $products = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->where('sub_category_id' , $request->sub_category_id)->simplePaginate(100);
+                $products = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->where('sub_category_id' , $request->sub_category_id)->orderBy('sort', 'asc')->simplePaginate(100);
             }else{
-                $products = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->where('sub_category_id' , $request->sub_category_id)->simplePaginate(100);
+                $products = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('category_id' , $request->category_id)->where('sub_category_id' , $request->sub_category_id)->orderBy('sort', 'asc')->simplePaginate(100);
             }
         }
 
@@ -206,9 +206,9 @@ class ProductController extends Controller
 
     public function getbrandproducts(Request $request){
         if($request->lang == 'en'){
-            $products = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('brand_id' , $request->brand_id)->simplePaginate(16);
+            $products = Product::select('id', 'title_en as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('brand_id' , $request->brand_id)->orderBy('sort', 'asc')->simplePaginate(16);
         }else{
-            $products = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('brand_id' , $request->brand_id)->simplePaginate(16);
+            $products = Product::select('id', 'title_ar as title' , 'final_price' , 'price_before_offer' , 'offer' , 'offer_percentage' , 'category_id', 'rate' )->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->where('brand_id' , $request->brand_id)->orderBy('sort', 'asc')->simplePaginate(16);
         }
 
 

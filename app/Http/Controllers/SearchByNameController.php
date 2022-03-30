@@ -21,11 +21,11 @@ class SearchByNameController extends Controller
             if($request->lang == 'en'){
                 $products = Product::select('title_en as title'  , 'id' , 'offer' , 'price_before_offer' , 'final_price' , 'offer_percentage' , 'category_id', 'rate')->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->Where(function($query) use ($search) {
                     $query->Where('title_en', 'like', '%' . $search . '%')->orWhere('title_ar', 'like', '%' . $search . '%');
-                })->get(); 
+                })->orderBy('sort', 'asc')->get(); 
             }else{
                 $products = Product::select('title_ar as title'  , 'id' , 'offer' , 'price_before_offer' , 'final_price' , 'offer_percentage' , 'category_id', 'rate')->where('deleted' , 0)->where('hidden' , 0)->where('remaining_quantity', '>', 0)->Where(function($query) use ($search) {
                     $query->Where('title_en', 'like', '%' . $search . '%')->orWhere('title_ar', 'like', '%' . $search . '%');
-                })->get(); 
+                })->orderBy('sort', 'asc')->get(); 
             }
 
             for($i =0; $i < count($products); $i++){
